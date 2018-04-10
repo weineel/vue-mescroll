@@ -2,7 +2,7 @@
   <div :id="mescrollId" class="wrapper mescroll">
     <!-- 下拉加载的配置 -->
     <div class="vue-mescroll-down-html-content" style="display: none;">
-      <slot name="down:htmlContent">
+      <slot name="down-html-content">
         <p class="downwarp-progress"></p><p class="downwarp-tip">下拉刷新 </p>
       </slot>
     </div>
@@ -10,12 +10,12 @@
     <slot></slot>
     <!-- 上拉刷新的配置 -->
     <div class="vue-mescroll-up-html-loading" style="display: none;">
-      <slot name="up:htmlLoading">
+      <slot name="up-html-loading">
         <p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中..</p>
       </slot>
     </div>
     <div class="vue-mescroll-up-html-nodata" style="display: none;">
-      <slot name="up:htmlNodata">
+      <slot name="up-html-nodata">
         <p class="upwarp-nodata">-- END --</p>
       </slot>
     </div>
@@ -63,8 +63,8 @@
           // 加载轮播数据
           // loadSwiper();
           // 下拉刷新的回调,默认重置上拉加载列表为第一页(down的auto默认true,初始化Mescroll之后会自动执行到这里,而mescroll.resetUpScroll会触发up的callback)
+          this.$emit('down-callback', mescroll)
           mescroll.resetUpScroll();
-          this.$emit('down:callback', mescroll)
         },
         offset: 60,  // 触发刷新的距离,默认80
         outOffsetRate: 0.2,  // 超过指定距离范围外时,改变下拉区域高度比例;值小于1且越接近0,越往下拉高度变化越小;
@@ -80,20 +80,20 @@
           // 初始化完毕的回调,可缓存dom
           mescroll.downTipDom = downwarp.getElementsByClassName("downwarp-tip")[0];
           mescroll.downProgressDom = downwarp.getElementsByClassName("downwarp-progress")[0];
-          this.$emit('down:inited', mescroll, downwarp)
+          this.$emit('down-inited', mescroll, downwarp)
         },
         inOffset: mescroll => {
           console.log("down --> inOffset");
           // 进入指定距离offset范围内那一刻的回调
           if(mescroll.downTipDom) mescroll.downTipDom.innerHTML = "下拉刷新";
           if(mescroll.downProgressDom) mescroll.downProgressDom.classList.remove("mescroll-rotate");
-          this.$emit('down:inOffset', mescroll)
+          this.$emit('down-inOffset', mescroll)
         },
         outOffset: mescroll => {
           console.log("down --> outOffset");
           // 下拉超过指定距离offset那一刻的回调
           if(mescroll.downTipDom) mescroll.downTipDom.innerHTML = "释放更新";
-          this.$emit('down:outOffset', mescroll)
+          this.$emit('down-outOffset', mescroll)
         },
         onMoving: (mescroll, rate, downHight) => {
           // 下拉过程中的回调,滑动过程一直在执行; rate下拉区域当前高度与指定距离offset的比值(inOffset: rate<1; outOffset: rate>=1); downHight当前下拉区域的高度
@@ -103,12 +103,12 @@
           //   mescroll.downProgressDom.style.webkitTransform = "rotate(" + progress + "deg)";
           //   mescroll.downProgressDom.style.transform = "rotate(" + progress + "deg)";
           // }
-          this.$emit('down:onMoving', mescroll, rate, downHight)
+          this.$emit('down-onMoving', mescroll, rate, downHight)
         },
         beforeLoading: (mescroll, downwarp) => {
           console.log("down --> beforeLoading");
           // 准备触发下拉刷新的回调
-          this.$emit('down:beforeLoading', mescroll, downwarp)
+          this.$emit('down-beforeLoading', mescroll, downwarp)
           return false; // 如果要完全自定义下拉刷新,那么return true,此时将不再执行showLoading(),callback();
         },
         showLoading: mescroll => {
@@ -116,7 +116,7 @@
           // 触发下拉刷新的回调
           if(mescroll.downTipDom) mescroll.downTipDom.innerHTML = "加载中 ...";
           if(mescroll.downProgressDom) mescroll.downProgressDom.classList.add("mescroll-rotate");
-          this.$emit('down:showLoading', mescroll)
+          this.$emit('down-showLoading', mescroll)
         }
       }
 
@@ -127,7 +127,7 @@
         isBoth: true,  // 上拉加载时,如果滑动到列表顶部是否可以同时触发下拉刷新;默认false,两者不可同时触发; 这里为了演示改为true,不必等列表加载完毕才可下拉;
         isBounce: false,  // 是否允许ios的bounce回弹;默认true,允许回弹; 此处配置为false,可解决微信,QQ,Safari等等iOS浏览器列表顶部下拉和底部上拉露出浏览器灰色背景和卡顿2秒的问题
         callback: page => {
-          this.$emit('up:callback', this.mescroll, page)
+          this.$emit('up-callback', this.mescroll, page)
         },  // 上拉回调,此处可简写; 相当于 callback (page, mescroll) { getListData(page); }
         page: {
           num: 0,  // 当前页 默认0,回调之前会加1; 即callback(page)会从1开始
@@ -159,8 +159,8 @@
           tip: "暂无相关数据~",  // 提示
           btntext: "去逛逛 >",  // 按钮,默认""
           btnClick: () => {// 点击按钮的回调,默认null
-            console.log("点击了按钮, 具体逻辑监听 up:empty:btnClick 事件");
-            this.$emit('up:empty:btnClick', this.mescroll)
+            console.log("点击了按钮, 具体逻辑监听 up-empty-btnClick 事件");
+            this.$emit('up-empty-btnClick', this.mescroll)
           },
           supportTap: false // 默认点击事件用onclick,会有300ms的延时;如果您的运行环境支持tap,则可配置true;
         },
@@ -174,24 +174,24 @@
         inited: (mescroll, upwarp) => {
           console.log("up --> inited");
           // 初始化完毕的回调,可缓存dom 比如 mescroll.upProgressDom = upwarp.getElementsByClassName("upwarp-progress")[0];
-          this.$emit('up:inited', mescroll, upwarp)
+          this.$emit('up-inited', mescroll, upwarp)
         },
         showLoading: (mescroll, upwarp) => {
           console.log("up --> showLoading");
           // 上拉加载中.. mescroll.upProgressDom.style.display = "block" 不通过此方式显示,因为ios快速滑动到底部,进度条会无法及时渲染
           upwarp.innerHTML = mescroll.optUp.htmlLoading;
-          this.$emit('up:showLoading', mescroll, upwarp)
+          this.$emit('up-showLoading', mescroll, upwarp)
         },
         showNoMore: (mescroll, upwarp) => {
           console.log("up --> showNoMore");
           // 无更多数据
           upwarp.innerHTML = mescroll.optUp.htmlNodata;
-          this.$emit('up:showNoMore', mescroll, upwarp)
+          this.$emit('up-showNoMore', mescroll, upwarp)
         },
         onScroll: (mescroll, y, isUp) => { // 列表滑动监听,默认onScroll: null;
           // y为列表当前滚动条的位置
           // console.log("up --> onScroll 列表当前滚动的距离 y = " + y + ", 是否向上滑动 isUp = " + isUp);
-          this.$emit('up:showNoMore', mescroll, y, isUp)
+          this.$emit('up-showNoMore', mescroll, y, isUp)
         },
         scrollbar: {
           use: isPC,  // 默认只在PC端自定义滚动条样式
@@ -227,7 +227,6 @@
         this.option.down.htmlContent = this.$el.getElementsByClassName('vue-mescroll-down-html-content')[0].innerHTML
         this.option.up.htmlLoading = this.$el.getElementsByClassName('vue-mescroll-up-html-loading')[0].innerHTML
         this.option.up.htmlNodata = this.$el.getElementsByClassName('vue-mescroll-up-html-nodata')[0].innerHTML
-        console.log('sss' + this.option.down.htmlContent)
         this.mescroll = new MeScroll(this.mescrollId, this.option)
       }
     }
