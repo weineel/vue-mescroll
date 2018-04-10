@@ -1,14 +1,23 @@
 <template>
   <div :id="mescrollId" class="wrapper mescroll">
     <!-- 下拉加载的配置 -->
-    <div id="vue-mescroll-down-html-content" style="display: none;">
-      <slot name="down:htmlContent"></slot>
+    <div class="vue-mescroll-down-html-content" style="display: none;">
+      <slot name="down:htmlContent">
+        <p class="downwarp-progress"></p><p class="downwarp-tip">下拉刷新 </p>
+      </slot>
     </div>
     <!-- 数据列表 -->
     <slot></slot>
     <!-- 上拉刷新的配置 -->
-    <div id="vue-mescroll-up-html-content">
-      <slot name="up:htmlContent"></slot>
+    <div class="vue-mescroll-up-html-loading" style="display: none;">
+      <slot name="up:htmlLoading">
+        <p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中..</p>
+      </slot>
+    </div>
+    <div class="vue-mescroll-up-html-nodata" style="display: none;">
+      <slot name="up:htmlNodata">
+        <p class="upwarp-nodata">-- END --</p>
+      </slot>
     </div>
   </div>
 </template>
@@ -65,7 +74,7 @@
         warpId: null,  // 可配置下拉刷新的布局添加到指定id的div;默认不配置,默认添加到mescrollId
         warpClass: "mescroll-downwarp",  // 容器,装载布局内容,参见mescroll.css
         resetClass: "mescroll-downwarp-reset",  // 高度重置的动画,参见mescroll.css
-        htmlContent: '<p class="downwarp-progress"></p><p class="downwarp-tip">下拉刷新 </p>',  // 布局内容
+        // htmlContent: upHtmlContent,  // 布局内容
         inited: (mescroll, downwarp) => {
           console.log("down --> inited");
           // 初始化完毕的回调,可缓存dom
@@ -118,7 +127,7 @@
         isBoth: true,  // 上拉加载时,如果滑动到列表顶部是否可以同时触发下拉刷新;默认false,两者不可同时触发; 这里为了演示改为true,不必等列表加载完毕才可下拉;
         isBounce: false,  // 是否允许ios的bounce回弹;默认true,允许回弹; 此处配置为false,可解决微信,QQ,Safari等等iOS浏览器列表顶部下拉和底部上拉露出浏览器灰色背景和卡顿2秒的问题
         callback: page => {
-          this.$emit('up:callback', page)
+          this.$emit('up:callback', this.mescroll, page)
         },  // 上拉回调,此处可简写; 相当于 callback (page, mescroll) { getListData(page); }
         page: {
           num: 0,  // 当前页 默认0,回调之前会加1; 即callback(page)会从1开始
@@ -130,9 +139,9 @@
         toTop: {
           // 回到顶部按钮,需配置src才显示
           warpId: null,  // 父布局的id; 默认添加在body中
-          src: "../res/img/mescroll-totop.png",  // 图片路径,默认null;
+          src: "./mescroll-totop.png",  // 图片路径,默认null;
           html: null,  // html标签内容,默认null; 如果同时设置了src,则优先取src
-          offset: 1000,  // 列表滚动多少距离才显示回到顶部按钮,默认1000
+          offset: 300,  // 列表滚动多少距离才显示回到顶部按钮,默认1000
           warpClass: "mescroll-totop",  // 按钮样式,参见mescroll.css
           showClass: "mescroll-fade-in",  // 显示样式,参见mescroll.css
           hideClass: "mescroll-fade-out",  // 隐藏样式,参见mescroll.css
@@ -146,7 +155,7 @@
         empty: {
           // 列表第一页无任何数据时,显示的空提示布局; 需配置warpId或clearEmptyId才生效;
           warpId:null,  // 父布局的id; 如果此项有值,将不使用clearEmptyId的值;
-          icon: "../res/img/mescroll-empty.png",  // 图标,默认null
+          icon: "./blank_no_service@2x.png",  // 图标,默认null
           tip: "暂无相关数据~",  // 提示
           btntext: "去逛逛 >",  // 按钮,默认""
           btnClick: () => {// 点击按钮的回调,默认null
@@ -160,8 +169,8 @@
         hardwareClass: "mescroll-hardware",  // 硬件加速样式,动画更流畅,参见mescroll.css
         warpId: null,  // 可配置上拉加载的布局添加到指定id的div;默认不配置,默认添加到mescrollId
         warpClass: "mescroll-upwarp",  // 容器,装载布局内容,参见mescroll.css
-        htmlLoading: '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中..</p>',  // 上拉加载中的布局
-        htmlNodata: '<p class="upwarp-nodata">-- END --</p>',  // 无数据的布局
+        // htmlLoading: upHtmlLoading,  // 上拉加载中的布局
+        // htmlNodata: upHtmlNodata,  // 无数据的布局
         inited: (mescroll, upwarp) => {
           console.log("up --> inited");
           // 初始化完毕的回调,可缓存dom 比如 mescroll.upProgressDom = upwarp.getElementsByClassName("upwarp-progress")[0];
@@ -215,6 +224,10 @@
 
     methods: {
       init() {
+        this.option.down.htmlContent = this.$el.getElementsByClassName('vue-mescroll-down-html-content')[0].innerHTML
+        this.option.up.htmlLoading = this.$el.getElementsByClassName('vue-mescroll-up-html-loading')[0].innerHTML
+        this.option.up.htmlNodata = this.$el.getElementsByClassName('vue-mescroll-up-html-nodata')[0].innerHTML
+        console.log('sss' + this.option.down.htmlContent)
         this.mescroll = new MeScroll(this.mescrollId, this.option)
       }
     }
@@ -224,5 +237,7 @@
 <style scoped>
   .wrapper {
     background-color: white;
+    box-sizing: border-box;
+    position: fixed;
   }
 </style>
