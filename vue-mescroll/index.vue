@@ -236,7 +236,6 @@
 
 <style scoped>
   .wrapper {
-    background-color: white;
     box-sizing: border-box;
     position: fixed;
   }
