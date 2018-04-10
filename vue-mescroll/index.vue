@@ -139,7 +139,7 @@
         toTop: {
           // 回到顶部按钮,需配置src才显示
           warpId: null,  // 父布局的id; 默认添加在body中
-          src: "./mescroll-totop.png",  // 图片路径,默认null;
+          src: require('./mescroll-totop.png'),  // 图片路径,默认null;
           html: null,  // html标签内容,默认null; 如果同时设置了src,则优先取src
           offset: 300,  // 列表滚动多少距离才显示回到顶部按钮,默认1000
           warpClass: "mescroll-totop",  // 按钮样式,参见mescroll.css
@@ -155,7 +155,7 @@
         empty: {
           // 列表第一页无任何数据时,显示的空提示布局; 需配置warpId或clearEmptyId才生效;
           warpId:null,  // 父布局的id; 如果此项有值,将不使用clearEmptyId的值;
-          icon: "./blank_no_service@2x.png",  // 图标,默认null
+          icon: require("./blank_no_service@2x.png"),  // 图标,默认null
           tip: "暂无相关数据~",  // 提示
           btntext: "去逛逛 >",  // 按钮,默认""
           btnClick: () => {// 点击按钮的回调,默认null
