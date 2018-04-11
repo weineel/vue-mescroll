@@ -1,0 +1,33 @@
+{
+  "name": "wn-vue-mescroll",
+  "version": "0.0.1",
+  "description": "封装 mescroll 为vue组件",
+  "author": "weineel",
+  "scripts": {
+  },
+  "main": "./index.vue",
+  "dependencies": {
+    "mescroll.js": "^1.3.2",
+    "vue": "^2.5.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weineel/vue-mescroll.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weineel/vue-mescroll/issues"
+  },
+  "keywords": [
+    "vue",
+    "mescroll"
+  ],
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
