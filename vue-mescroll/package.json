@@ -1,6 +1,6 @@
 {
   "name": "wn-vue-mescroll",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "封装 mescroll 为vue组件",
   "author": "weineel",
   "scripts": {

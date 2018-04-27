@@ -191,7 +191,7 @@
         onScroll: (mescroll, y, isUp) => { // 列表滑动监听,默认onScroll: null;
           // y为列表当前滚动条的位置
           // console.log("up --> onScroll 列表当前滚动的距离 y = " + y + ", 是否向上滑动 isUp = " + isUp);
-          this.$emit('up-showNoMore', mescroll, y, isUp)
+          this.$emit('up-scroll', mescroll, y, isUp)
         },
         scrollbar: {
           use: isPC,  // 默认只在PC端自定义滚动条样式
